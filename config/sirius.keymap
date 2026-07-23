@@ -1,0 +1,239 @@
+#include <dt-bindings/zmk/input_transform.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <input/processors.dtsi>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/pointing.h>
+#include <mouse-gesture.dtsi>
+
+#define NUM lt 3
+#define FN lt 4
+#define SCROLL mo 4
+#define SNIPING mo 5
+#define Game_except layers = <0 1>;
+
+/ {
+   zip_temp_layer: zip_temp_layer {
+        compatible = "zmk,input-processor-temp-layer";
+        #input-processor-cells = <2>;
+        require-prior-idle-ms = <300>;
+        excluded-positions = <26 27 28 29>;
+    };
+
+    trackball_listener {
+        input-processors = <
+        &zip_temp_layer 1 3000
+        &zip_mouse_gesture
+        >;
+
+        scroller {
+            layers = <4>;
+            input-processors = <
+                   &zip_xy_to_scroll_mapper
+                   &zip_scroll_transform INPUT_TRANSFORM_Y_INVERT
+                   &zip_scroll_scaler 1 12>;
+            process-next;
+        };
+
+        gaming {
+            layers = <2>;
+            input-processors = <&zip_xy_scaler 12 10>;
+            process-next; 
+        };
+
+        sniping {
+            layers = <5>;
+            input-processors = <&zip_xy_scaler 4 10>;
+            process-next; 
+        };
+    };
+
+    behaviors {
+        hm: homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <200>;
+            require-prior-idle-ms = <100>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+
+        ht: hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <200>;
+            require-prior-idle-ms = <100>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+
+        td_lang: tap_dance_lang {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp RALT>, <&kp CAPS>;
+        };
+    };
+};
+
+&mouse_gesture_kp {
+    tapping-term-ms = <200>;
+    quick-tap-ms = <250>;
+    flavor = "balanced";
+};
+
+&mouse_gesture_mkp {
+    tapping-term-ms = <200>;
+    quick-tap-ms = <250>;
+    flavor = "balanced";
+};
+
+&zip_mouse_gesture {
+    stroke-size = <100>;
+    enable-eager-mode;
+
+    history_back {
+        pattern = <GESTURE_LEFT>;
+        bindings = <&kp LA(LEFT)>;
+    };
+
+    history_forward {
+        pattern = <GESTURE_RIGHT>;
+        bindings = <&kp LA(RIGHT)>;
+    };
+
+    close_tab {
+        pattern = <GESTURE_UP>;
+        bindings = <&kp LC(W)>;
+    };
+
+    new_tab {
+        pattern = <GESTURE_DOWN>;
+        bindings = <&kp LC(T)>;
+    };
+
+    app_switcher {
+        pattern = <GESTURE_DOWN GESTURE_UP>;
+        bindings = <&kp LG(TAB)>;
+    };
+
+    virtual_desktop_prev {
+        pattern = <GESTURE_LEFT GESTURE_DOWN>;
+        bindings = <&kp LG(LC(LEFT))>;
+    };
+
+    virtual_desktop_next {
+        pattern = <GESTURE_RIGHT GESTURE_DOWN>;
+        bindings = <&kp LG(LC(RIGHT))>;
+    };
+};
+
+
+/ {
+    macros {
+        bkt: bkt {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_tap_time 10>,
+                <&macro_tap>,
+                <&kp RBKT &kp LEFT &kp LBKT>;
+        };
+    };
+};
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+        combo_esc { timeout-ms = <50>; key-positions = <0 1>; bindings = <&kp ESC>; };
+        combo_enter { timeout-ms = <50>; key-positions = <17 18>; bindings = <&kp ENTER>; Game_except };
+        combo_lang { timeout-ms = <50>; key-positions = <27 28>; bindings = <&td_lang>; Game_except };
+        combo_grave { timeout-ms = <50>; key-positions = <1 2>; bindings = <&kp GRAVE>; Game_except };
+        combo_cut { timeout-ms = <50>; key-positions = <20 21>; bindings = <&kp LC(X)>; Game_except };
+        combo_copy { timeout-ms = <50>; key-positions = <21 22>; bindings = <&kp LC(C)>; Game_except };
+        combo_paste { timeout-ms = <50>; key-positions = <22 23>; bindings = <&kp LC(V)>; Game_except };
+        combo_sqt { timeout-ms = <50>; key-positions = <18 19>; bindings = <&kp SQT>; Game_except };
+        combo_lbkt { timeout-ms = <50>; key-positions = <2 3>; bindings = <&kp LEFT_BRACKET>; Game_except };
+        combo_rbkt { timeout-ms = <50>; key-positions = <6 7>; bindings = <&kp RIGHT_BRACKET>; Game_except };
+        combo_bac { timeout-ms = <50>; key-positions = <3 4>; bindings = <&kp BACKSLASH>; Game_except };
+        combo_m { timeout-ms = <50>; key-positions = <26 27>; bindings = <&kp M>; Game_except };
+        combo_q { timeout-ms = <50>; key-positions = <0 32>; bindings = <&kp LS(Q)>; Game_except };
+        combo_w { timeout-ms = <50>; key-positions = <1 32>; bindings = <&kp LS(W)>; Game_except };
+        combo_e { timeout-ms = <50>; key-positions = <2 32>; bindings = <&kp LS(E)>; Game_except };
+        combo_r { timeout-ms = <50>; key-positions = <3 32>; bindings = <&kp LS(R)>; Game_except };
+        combo_t { timeout-ms = <50>; key-positions = <4 32>; bindings = <&kp LS(T)>; Game_except };
+        combo_o { timeout-ms = <50>; key-positions = <7 8>; bindings = <&kp LS(O)>; Game_except };
+        combo_p { timeout-ms = <50>; key-positions = <8 9>; bindings = <&kp LS(P)>; Game_except };
+        combo_mouse4 { timeout-ms = <50>; key-positions = <26 17>; bindings = <&mkp MB4>; Game_except };
+        combo_mouse5 { timeout-ms = <50>; key-positions = <28 17>; bindings = <&mkp MB5>; Game_except };
+        
+        combo_game { timeout-ms = <50>; key-positions = <0 1 2 3>; bindings = <&tog 2>; layers = <0 1 2>; };
+        combo_G1 { timeout-ms = <50>; key-positions = <23 24>; bindings = <&kp B>; layers = <2>; };
+        combo_G2 { timeout-ms = <50>; key-positions = <22 23>; bindings = <&kp N1>; layers = <2>; };
+        combo_G3 { timeout-ms = <50>; key-positions = <21 22>; bindings = <&kp N2>; layers = <2>; };
+        combo_G4 { timeout-ms = <50>; key-positions = <20 21>; bindings = <&kp N3>; layers = <2>; };
+        combo_G5 { timeout-ms = <50>; key-positions = <7 8>; bindings = <&kp ENTER>; layers = <2>; };
+        combo_G6 { timeout-ms = <50>; key-positions = <27 28>; bindings = <&kp X>; layers = <2>; };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+            &ht F1 Q       &ht F2 W        &ht F3 E        &ht F4 R        &ht F5 T                  &ht F6 Y        &ht F7 U        &ht F8 I        &ht F9 O        &ht F10 P
+            &hm LGUI A     &hm LALT S      &hm LCTRL D     &hm LSHFT F     &ht F11 G                 &ht F12 H       &hm LSHFT J     &hm LCTRL K     &hm LALT L      &hm LGUI SEMI
+            &kp Z          &kp X           &kp C           &kp V           &kp B                     &kp N           &kp M           &kp COMMA       &kp DOT         &FN FSLH
+                                                           &kp ENTER       &NUM SPACE
+            >;
+        };
+
+        mouse_layer {
+            bindings = <
+            &trans         &trans          &trans          &trans          &trans                    &trans          &trans          &trans          &trans          &trans
+            &trans         &trans          &trans          &trans          &trans                    &trans          &trans          &trans          &trans          &trans
+            &trans         &trans          &trans          &trans          &trans                    &trans          &mkp LCLK       &mouse_gesture_mkp 0 RCLK       &mkp MCLK       &SCROLL
+                                                           &trans          &trans
+            >;
+        };
+
+        game_layer {
+            bindings = <
+            &kp TAB        &kp Q           &kp W           &kp E           &kp R                     &kp F1          &kp F2           &kp N2           &kp N3          &kp N4 
+            &kp LSHFT      &kp A           &kp S           &kp D           &kp F                     &mkp MB5        &kp N1           &mkp RCLK        &mkp MCLK       &mkp MB4
+            &kp LCTRL      &kp Z           &kp H           &kp X           &kp C                     &ht N M         &mkp LCLK        &kp CAPS         &SNIPING        &SCROLL
+                                                           &kp LALT        &kp SPACE
+            >;
+        };
+
+        number_layer { 
+            bindings = <
+            &kp HOME       &kp END         &kp UP          &kp BSPC        &kp DEL                   &kp EQUAL       &kp N7          &kp N8          &kp N9          &kp BSPC
+            &kp TAB        &hm LALT LEFT   &hm LCTRL DOWN  &hm LSHFT RIGHT &kp PG_UP                 &kp MINUS       &kp N4          &kp N5          &kp N6          &kp PLUS
+            &trans         &trans          &trans          &kp ENTER       &kp PG_DN                 &kp N0          &kp N1          &kp N2          &kp N3          &kp DOT
+                                                           &trans          &trans
+            >;
+        };
+
+        function_layer {
+            bindings = <
+            &trans         &trans          &trans          &trans          &trans                    &trans          &trans          &trans          &trans          &trans
+            &trans         &trans          &trans          &trans          &trans                    &kp C_BRI_UP    &trans          &trans          &trans          &trans
+            &trans         &trans          &trans          &trans          &trans                    &kp C_BRI_DN    &kp C_MUTE      &kp C_VOL_DN    &kp C_VOL_UP    &trans
+                                                           &trans          &trans
+            >;
+        };
+
+        sniping_layer {
+            bindings = <
+            &kp TAB        &kp Q           &kp W           &kp E           &kp R                     &kp F1          &kp F2           &kp N2           &kp N3          &kp N4 
+            &kp LSHFT      &kp A           &kp S           &kp D           &kp F                     &mkp MB5        &kp N1           &mkp RCLK        &mkp MCLK       &mkp MB4
+            &kp LCTRL      &kp Z           &kp H           &kp G           &kp V                     &ht N M         &mkp LCLK        &kp CAPS         &SNIPING        &SCROLL
+                                                           &kp ENTER       &NUM SPACE
+            >;
+        };
+    };
+};
