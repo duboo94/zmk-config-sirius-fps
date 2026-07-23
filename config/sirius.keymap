@@ -36,18 +36,13 @@
 
     combos {
         compatible = "zmk,combos";
-        combo_enter { timeout-ms = <50>; key-positions = <19 20>; bindings = <&kp ENTER>; Game_except };
-        combo_lang { timeout-ms = <50>; key-positions = <29 30>; bindings = <&td_lang>; Game_except };
-        combo_grave { timeout-ms = <50>; key-positions = <0 1>; bindings = <&kp GRAVE>; Game_except };
-        combo_sqt { timeout-ms = <50>; key-positions = <20 21>; bindings = <&kp SQT>; Game_except };
-        combo_m { timeout-ms = <50>; key-positions = <26 44>; bindings = <&kp M>; Game_except };
-        combo_q { timeout-ms = <50>; key-positions = <11 44>; bindings = <&kp LS(Q)>; Game_except };
-        combo_w { timeout-ms = <50>; key-positions = <12 44>; bindings = <&kp LS(W)>; Game_except };
-        combo_e { timeout-ms = <50>; key-positions = <13 44>; bindings = <&kp LS(E)>; Game_except };
-        combo_r { timeout-ms = <50>; key-positions = <14 44>; bindings = <&kp LS(R)>; Game_except };
-        combo_t { timeout-ms = <50>; key-positions = <15 44>; bindings = <&kp LS(T)>; Game_except };
-        combo_o { timeout-ms = <50>; key-positions = <9 10>; bindings = <&kp LS(O)>; Game_except };
-        combo_p { timeout-ms = <50>; key-positions = <10 11>; bindings = <&kp LS(P)>; Game_except };
+        combo_enter { timeout-ms = <50>; key-positions = <19 20>; bindings = <&kp ENTER>; };
+        combo_lang { timeout-ms = <50>; key-positions = <29 30>; bindings = <&td_lang>; };
+        combo_grave { timeout-ms = <50>; key-positions = <0 1>; bindings = <&kp GRAVE>; };
+        combo_sqt { timeout-ms = <50>; key-positions = <20 21>; bindings = <&kp SQT>; };
+        combo_m { timeout-ms = <50>; key-positions = <26 44>; bindings = <&kp M>; };
+        combo_o { timeout-ms = <50>; key-positions = <9 10>; bindings = <&kp LS(O)>; };
+        combo_p { timeout-ms = <50>; key-positions = <10 11>; bindings = <&kp LS(P)>; };
     };
 
       keymap {
